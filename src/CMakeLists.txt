@@ -1,0 +1,4 @@
+
+add_subdirectory(ParLeastSquares)
+add_subdirectory(pymodule)
+

@@ -1,0 +1,103 @@
+
+#ifndef __HELPER_FUNCTIONS_H
+#define __HELPER_FUNCTIONS_H
+
+#include <cmath>
+#include <fstream>
+#include <iostream>
+#include <Eigen/Eigen>
+#include <unsupported/Eigen/NonLinearOptimization>
+
+using namespace Eigen;
+
+static constexpr int CPP98      = 199711;
+static constexpr int GCC98      = 199711;
+static constexpr int CPP11      = 201103;
+static constexpr int GNU11      = 201103;
+static constexpr int CPP14      = 201402;
+static constexpr int GNU14      = 201402;
+static constexpr int CPP1z      = 201500;
+static constexpr int CPP17      = 201500;
+static constexpr int MY_CPP_STD = __cplusplus;
+static constexpr int n_threads  = 8;
+
+static constexpr double init_x = 0.001;
+
+struct lmder_functor // : DenseFunctor<double>
+{
+    typedef double Scalar;
+    typedef Eigen::Matrix<double, Dynamic, 1> InputType;
+    typedef Eigen::Matrix<double, Dynamic, 1> ValueType;
+    typedef Eigen::Matrix<double, Dynamic, Dynamic> JacobianType;
+    MatrixXd S;
+    MatrixXd R;
+    MatrixXd P;
+    VectorXd Keq_constant;
+    VectorXd E_Regulation;
+    VectorXd log_fcounts;
+
+    // Number of data points, i.e. values.
+    int m;
+    // The number of parameters, i.e. inputs.
+    int n;
+
+    lmder_functor(
+        MatrixXd& _S,
+        MatrixXd& _R, 
+        MatrixXd& _P,
+        VectorXd& _Keq_constant,
+        VectorXd& _E_Regulation,
+        VectorXd& _log_fcounts):
+        m(_S.rows()),
+        n(_S.cols()-_log_fcounts.size()),
+        S(_S),
+        R(_R),
+        P(_P),
+        Keq_constant(_Keq_constant),
+        E_Regulation(_E_Regulation),
+        log_fcounts(_log_fcounts) {}
+   
+    // Returns 'm', the number of values.
+    inline int values() const { return m; }
+    // Returns 'n', the number of inputs.
+    inline int inputs() const { return n; }
+    
+    int operator()(const VectorXd& log_vcounts, VectorXd& deriv);
+    //WARNING  jacobian should be calculated wrt metabolite concentration, not log(concentration). 
+    int df(const VectorXd &log_vcounts, MatrixXd &fjac);
+};
+
+
+/*
+ * Driver function for calculating the least squares with the
+ * Levenberg-Marquardt method
+ */
+[[nodiscard]]
+extern Eigen::VectorXd least_squares(
+            Eigen::MatrixXd& S_mat,
+            Eigen::MatrixXd& R_back_mat,
+            Eigen::MatrixXd& P_mat, 
+            Eigen::VectorXd& Keq_constant,
+            Eigen::VectorXd& E_Regulation,
+            Eigen::VectorXd& log_fcounts,
+            Eigen::VectorXd& log_vcounts);
+
+struct matrix_market {
+    double* data;
+    int rows;
+    int cols;
+};
+
+extern void read_mm_scpy(struct matrix_market* mat, std::istream& file);
+extern void read_mm_std(struct matrix_market* mat, std::istream& file);
+
+/*
+ * See https://stackoverflow.com/questions/57075834/how-to-convert-matrix-market-file-to-matrix-in-c
+ */
+[[nodiscard]]
+struct matrix_market* read_mm(std::string& fn, const bool scipy_fmt=true);
+
+[[nodiscard]]
+std::vector<double> read_vector(const std::string& path);
+
+#endif
