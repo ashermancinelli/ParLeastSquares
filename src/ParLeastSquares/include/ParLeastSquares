@@ -1,12 +1,12 @@
-
-#ifndef __HELPER_FUNCTIONS_H
-#define __HELPER_FUNCTIONS_H
+#pragma once
 
 #include <cmath>
 #include <fstream>
 #include <iostream>
 #include <Eigen/Eigen>
 #include <unsupported/Eigen/NonLinearOptimization>
+
+#include <par_ls_defs.hpp>
 
 using namespace Eigen;
 
@@ -19,11 +19,8 @@ static constexpr int GNU14      = 201402;
 static constexpr int CPP1z      = 201500;
 static constexpr int CPP17      = 201500;
 static constexpr int MY_CPP_STD = __cplusplus;
-static constexpr int n_threads  = 8;
 
-static constexpr double init_x = 0.001;
-
-struct lmder_functor // : DenseFunctor<double>
+struct lmder_functor
 {
     typedef double Scalar;
     typedef Eigen::Matrix<double, Dynamic, 1> InputType;
@@ -94,10 +91,8 @@ extern void read_mm_std(struct matrix_market* mat, std::istream& file);
 /*
  * See https://stackoverflow.com/questions/57075834/how-to-convert-matrix-market-file-to-matrix-in-c
  */
-[[nodiscard]]
-struct matrix_market* read_mm(std::string& fn, const bool scipy_fmt=true);
+[[nodiscard]] extern 
+struct matrix_market* read_mm(std::string& fn, const bool scipy_fmt);
 
-[[nodiscard]]
+[[nodiscard]] extern
 std::vector<double> read_vector(const std::string& path);
-
-#endif

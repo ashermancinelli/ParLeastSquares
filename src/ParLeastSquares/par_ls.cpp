@@ -130,7 +130,7 @@ Eigen::VectorXd least_squares(
         Eigen::VectorXd& Keq_constant,
         Eigen::VectorXd& E_Regulation,
         Eigen::VectorXd& log_fcounts,
-        Eigen::VectorXd& log_vcounts);
+        Eigen::VectorXd& log_vcounts)
 {
     lmder_functor functor(
             S_mat,

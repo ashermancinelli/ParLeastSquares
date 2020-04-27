@@ -4,7 +4,7 @@
 #include <Eigen/Core>
 #include <unsupported/Eigen/SparseExtra>
 
-#include "helper_functions.hpp"
+#include <ParLeastSquares>
 
 using Eigen::VectorXd;
 using Eigen::MatrixXd;

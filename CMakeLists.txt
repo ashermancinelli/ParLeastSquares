@@ -5,6 +5,18 @@ project(ParLeastSquares CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+if(N_THREADS)
+    message("Building to use ${N_THREADS} threads.")
+else()
+    set(N_THREADS 8)
+endif()
+
+if(INIT_X)
+    message("Using ${INIT_X} as initial guess for x.")
+else()
+    set(INIT_X 0.001)
+endif()
+
 message("CMake looking for pybind11...")
 add_subdirectory(pybind11)
 
@@ -14,7 +26,7 @@ find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 if(TARGET Eigen3::Eigen)
     message("Found Eigen3")
 else()
-    message("Did not find Eigen3")
+    message(FATAL_ERROR "Did not find Eigen3. You may specify eigen directory with -DEigen3_DIR")
 endif()
 
 enable_testing()
@@ -86,3 +98,4 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 endif()
 
 add_subdirectory(src)
+# add_subdirectory(tests)

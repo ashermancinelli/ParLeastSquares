@@ -1,0 +1,2 @@
+#cmakedefine N_THREADS @N_THREADS@
+#cmakedefine INIT_X @INIT_X@
