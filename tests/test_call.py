@@ -1,13 +1,14 @@
 
 import numpy as np
 import pickle as P
-import os
+import os, sys
 
 datadir = './test_cases/pickle'
 
 inputs = P.load(open(os.path.join(datadir, 'inputs.p'), 'rb'))
 expected = P.load(open(os.path.join(datadir, 'results.p'), 'rb'))
 
+sys.path.append('../build/src/pymodule')
 import pstep
 
 print(f'Inputs: ')

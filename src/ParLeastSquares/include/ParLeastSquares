@@ -79,6 +79,16 @@ extern Eigen::VectorXd least_squares(
             Eigen::VectorXd& log_fcounts,
             Eigen::VectorXd& log_vcounts);
 
+[[nodiscard]]
+extern Eigen::VectorXd least_squares(
+            const double* S_mat,
+            const double* R_back_mat,
+            const double* P_mat, 
+            const double* Keq_constant,
+            const double* E_Regulation,
+            const double* log_fcounts,
+            const double* log_vcounts);
+
 struct matrix_market {
     double* data;
     int rows;
