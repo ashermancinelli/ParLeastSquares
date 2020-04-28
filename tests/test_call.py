@@ -2,28 +2,27 @@
 import numpy as np
 import pickle as P
 import os, sys
-
-datadir = './test_cases/pickle'
-
-inputs = P.load(open(os.path.join(datadir, 'inputs.p'), 'rb'))
-expected = P.load(open(os.path.join(datadir, 'results.p'), 'rb'))
-
-sys.path.append('../build/src/pymodule')
 import pstep
 
-print(f'Inputs: ')
-for k, v in inputs.items():
-    print(f'Shape for {k}: {v.shape}')
+datadir = sys.argv[1]
 
-assert len(inputs) == 7, 'Wrong number of inputs passed to dispatch'
-actual = pstep.dispatch([i for i in range(len(inputs['state']))], *inputs.values());
-print('Call successful.')
+for case in ['orig', 'restricted']:
+    inputs = P.load(open(os.path.join(datadir, case, 'inputs.p'), 'rb'))
+    expected = P.load(open(os.path.join(datadir, case, 'results.p'), 'rb'))
 
-epsilon = 0.0000001
+    print(f'Inputs: ')
+    for k, v in inputs.items():
+        print(f'Shape for {k}: {v.shape}')
 
-for i in len(rets):
-    for j in len(rets[i]):
-        if abs(expected[i, j] - actual[i, j]) > epsilon:
-            print(f'--- Expected<{expected[i, j]}> Actual<{actual[i, j]}>')
+    assert len(inputs) == 7, 'Wrong number of inputs passed to dispatch'
+    actual = pstep.dispatch([i for i in range(len(inputs['state']))], *inputs.values());
+    print('Call successful.')
 
-print(f'Got: {rets}')
+    epsilon = 0.0000001
+
+    for i in len(rets):
+        for j in len(rets[i]):
+            if abs(expected[i, j] - actual[i, j]) > epsilon:
+                print(f'--- Expected<{expected[i, j]}> Actual<{actual[i, j]}>')
+
+    print(f'Got: {rets}')

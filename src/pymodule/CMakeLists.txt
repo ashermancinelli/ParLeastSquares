@@ -5,6 +5,8 @@ add_library(
     pstep
     MODULE module.cpp)
 
+# pybind11_add_module(pstep module.cpp)
+
 target_link_libraries(
     pstep
     PRIVATE pybind11::module)

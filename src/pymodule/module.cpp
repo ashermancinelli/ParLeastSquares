@@ -78,20 +78,16 @@ void potential_step(
         Eigen::VectorXd& log_vcounts
         ) -> Eigen::MatrixXd
 {
+
+    const int n_threads = indices.size();
+    /*
     if constexpr (MY_CPP_STD < CPP11)
     {
         Eigen::initParallel();
     }
 
-    // No need for parallelism within Eigen, as each thread will be
-    // using the Eigen library on it's own thread -
-    // unless of course we run in a slurm allocation and we have
-    // enough threads both for each call of potential_step and for
-    // the parallelism within Eigen.
-    //
     // Eigen::setNbThreads(n_threads);
-
-    const int n_threads = indices.size();
+    */
 
     /*
      * Returns mxn where:
@@ -144,7 +140,13 @@ void potential_step(
     return returns;
 }
 
+void test_call()
+{
+    std::cout << "Called into cxx\n";
+}
+
 PYBIND11_MODULE(pstep, m) {
     m.doc() = "Dispatches jobs to calculate potential steps."; // optional module docstring
     m.def("dispatch", &dispatch, "Dispatches jobs");
+    m.def("test_call_", &test_call, "");
 }
