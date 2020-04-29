@@ -43,6 +43,13 @@ class CMakeBuild(build_ext):
         cmake_args = ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + extdir,
                       '-DPYTHON_EXECUTABLE=' + sys.executable]
 
+        try:
+            cmake_args.append('-DEigen3_DIR=%s/share/eigen3/cmake' % os.environ['INSTALL_LOCAL'])
+            print('Found local install directory. using Eigen3 from %s' %
+                    os.environ['INSTALL_LOCAL'])
+        except KeyError:
+            pass
+
         cfg = 'Debug' if self.debug else 'Release'
         build_args = ['--config', cfg]
 

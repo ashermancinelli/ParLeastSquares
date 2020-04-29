@@ -1,4 +1,4 @@
-from scripts import *
+from setuptools_cmake import *
 
 setup(
     name='ParLeastSquares',
