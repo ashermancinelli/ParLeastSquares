@@ -79,30 +79,8 @@ extern Eigen::VectorXd least_squares(
             Eigen::VectorXd& log_fcounts,
             Eigen::VectorXd& log_vcounts);
 
-[[nodiscard]]
-extern Eigen::VectorXd least_squares(
-            const double* S_mat,
-            const double* R_back_mat,
-            const double* P_mat, 
-            const double* Keq_constant,
-            const double* E_Regulation,
-            const double* log_fcounts,
-            const double* log_vcounts);
-
-struct matrix_market {
-    double* data;
-    int rows;
-    int cols;
-};
-
-extern void read_mm_scpy(struct matrix_market* mat, std::istream& file);
-extern void read_mm_std(struct matrix_market* mat, std::istream& file);
-
-/*
- * See https://stackoverflow.com/questions/57075834/how-to-convert-matrix-market-file-to-matrix-in-c
- */
 [[nodiscard]] extern 
-struct matrix_market* read_mm(std::string& fn, const bool scipy_fmt);
+Eigen::MatrixXd read_mm(const std::string& path);
 
 [[nodiscard]] extern
-std::vector<double> read_vector(const std::string& path);
+Eigen::VectorXd read_vector(const std::string& path);

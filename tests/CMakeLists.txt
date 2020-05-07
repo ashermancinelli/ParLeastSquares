@@ -1,19 +1,41 @@
-# add_executable(test_driver driver.cpp)
+add_executable(TestInterface test_call_interface.cpp)
+add_executable(TestOperator test_call_op.cpp)
+add_executable(TestMinimize test_minimize.cpp)
 
-# target_link_libraries(test_driver 
-# PRIVATE options warnings ParLeastSquares)
+target_compile_options(TestInterface PRIVATE -g)
+target_compile_options(TestOperator PRIVATE -g)
+target_compile_options(TestMinimize PRIVATE -g)
 
-# Add built python module to ld path
-set(ENV{LD_LIBRARY_PATH} "$ENV{LD_LIBRARY_PATH}:${CMAKE_SOURCE_DIR}/build/src/pymodule")
+target_link_libraries(TestOperator 
+    PRIVATE options warnings ParLeastSquares)
+
+target_link_libraries(TestMinimize 
+    PRIVATE options warnings ParLeastSquares)
+
+target_link_libraries(TestInterface 
+    PRIVATE options warnings ParLeastSquares)
 
 add_test(
-    NAME TestImport
-    COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_import.py)
+    NAME TestInterface
+    COMMAND $<TARGET_FILE:TestInterface> ${CMAKE_SOURCE_DIR}/tests/test_cases/matrix_market)
 
 add_test(
-    NAME TestCall_Pickle
-    COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_call.py ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_cases/pickle)
+    NAME TestOperator
+    COMMAND $<TARGET_FILE:TestOperator> ${CMAKE_SOURCE_DIR}/tests/test_cases/matrix_market)
 
 add_test(
-    NAME TestCall_MatrixMarket
-    COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_call.py ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_cases/matrix-market)
+    NAME TestMinimize
+    COMMAND $<TARGET_FILE:TestMinimize> ${CMAKE_SOURCE_DIR}/tests/test_cases/matrix_market)
+
+# 
+# add_test(
+#     NAME TestImport
+#     COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_import.py)
+# 
+# add_test(
+#     NAME TestCall_Pickle
+#     COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_call.py ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_cases/pickle)
+# 
+# add_test(
+#     NAME TestCall_MatrixMarket
+#     COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_call.py ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_cases/matrix-market)

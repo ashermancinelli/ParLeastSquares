@@ -7,6 +7,9 @@ inline void printShape(const std::string& s, const Eigen::MatrixXd& m)
     std::cout << "Shape of " << s << ": (" << m.rows() << ", " << m.cols() << ")\n";
 }
 
+/*
+ * AKA calc_jacobian
+ */
 int lmder_functor::df(const VectorXd &log_vcounts, MatrixXd &fjac)
 {
     std::cout << __func__ << " start\n";
@@ -66,7 +69,6 @@ int lmder_functor::operator()(const VectorXd& log_vcounts, VectorXd& deriv)
     int nrxns = S.rows();
     int nvar = log_vcounts.rows();//make sure this is length and not 1
     int metabolite_count = S.cols();
-
 
     VectorXd log_metabolites(log_vcounts.size() + log_fcounts.size());
     log_metabolites << log_vcounts, log_fcounts;
@@ -135,71 +137,49 @@ Eigen::VectorXd least_squares(
     return log_vcounts;
 }
 
-void read_mm_scpy(struct matrix_market* mat, std::istream& file)
-{
-    int num_row, num_col;
-    file >> num_row >> num_col;
-    mat->rows = num_row;
-    mat->cols = num_col;
-    const int num_lines = num_col * num_row;
-    mat->data = new double[num_lines];
-    std::fill(mat->data, mat->data + num_lines, 0.);
-    for (int i = 0; i < num_lines; i++)
-    {
-        double d;
-        file >> d;
-        mat->data[i] = d;
-    }
-}
-
-void read_mm_std(struct matrix_market* mat, std::istream& file)
-{
-    int num_row, num_col, num_lines;
-    // Read number of rows and columns
-    file >> num_row >> num_col >> num_lines;
-    mat->rows = num_row;
-    mat->cols = num_col;
-
-    // Create 2D array and fill with zeros
-    mat->data = new double[num_row * num_col];      
-    double* data = mat->data;
-
-    std::fill(data, data + num_row * num_col, 0.);
-
-    // fill the mat with data
-    for (int l = 0; l < num_lines; l++)
-    {
-        double d;
-        int row, col;
-        file >> row >> col >> d;
-        data[(row - 1) + (col - 1) * num_row] = d;
-    }
-}
-
 [[nodiscard]]
-struct matrix_market* read_mm(std::string& fn, const bool scipy_fmt=true)
+Eigen::MatrixXd read_mm(const std::string& path)
 {
-    std::ifstream file(fn);
+    std::ifstream file(path);
     // Ignore comments headers
     while (file.peek() == '%') file.ignore(2048, '\n');
 
-    auto mat = new matrix_market;
-    scipy_fmt ? read_mm_scpy(mat, file) : read_mm_std(mat, file);
+    int rows, cols;
+    file >> rows >> cols;
+    std::cout << "Found dimensions ("
+        << rows << ", " << cols << ") for file "
+        << path << "\n";
+
+    double d;
+    Eigen::MatrixXd mat(rows, cols);
+    for (int i=0; i < rows; i++)
+        for (int j=0; j < cols; j++)
+        {
+            file >> d;
+            mat(i, j) = d;
+        }
     file.close();
 
     return mat;
 }
 
 [[nodiscard]]
-std::vector<double> read_vector(const std::string& path)
+Eigen::VectorXd read_vector(const std::string& path)
 {
     std::vector<double> vec;
     std::ifstream f(path);
-    while (!f.eof())
+    std::string line;
+
+    while (getline(f, line))
     {
         double d;
-        f >> d;
+        d = std::atof(line.c_str());
         vec.push_back(d);
     }
-    return vec;
+
+    std::cout << "Reading vector with size " << vec.size()
+        << " from " << path << "\n";
+    VectorXd eigen_vec(vec.size());
+    for (int i=0; i<vec.size(); i++) eigen_vec(i) = vec[i];
+    return eigen_vec;
 }
