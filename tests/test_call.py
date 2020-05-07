@@ -2,9 +2,15 @@
 import numpy as np
 import pickle as P
 import os, sys
-import pstep
 
-datadir = sys.argv[1]
+if len(sys.argv) < 2:
+    datadir = 'test_cases/restricted/'
+else:
+    datadir = sys.argv[1]
+
+sys.path.extend('..')
+print(sys.path)
+import pstep
 
 for case in ['orig', 'restricted']:
     inputs = P.load(open(os.path.join(datadir, case, 'inputs.p'), 'rb'))
