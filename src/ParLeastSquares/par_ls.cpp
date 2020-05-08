@@ -20,7 +20,7 @@ int lmder_functor::df(const VectorXd &log_vcounts, MatrixXd &fjac)
     //J_ij = d/dx_i(df_j/dt)
 
     int nrxns = S.rows();
-    int nvar = log_vcounts.rows();//make sure this is length and not 1
+    int nvar = log_vcounts.size();//make sure this is length and not 1
     int metabolite_count = S.cols();
 
     //WARNING Only use to calcualte KQ
@@ -55,7 +55,7 @@ int lmder_functor::df(const VectorXd &log_vcounts, MatrixXd &fjac)
     //maybe need to do (x.transpose()).cwiseProduce(S_recip_metab.transpose()).transpose()
     MatrixXd y = x.rowwise().replicate(S.cols()).array() * S_recip_metab.array();
 
-    fjac = (S.transpose()) * y;
+    fjac = ((S.transpose()) * y).block(0, 0, nvar, nvar);
 
     std::cout << "df end\n";
     return 0;
@@ -75,8 +75,6 @@ int lmder_functor::operator()(const VectorXd& log_vcounts, VectorXd& deriv)
 
     VectorXd log_Q_inv = -1.0 * ( (R * log_metabolites) + (P * log_metabolites));
     VectorXd log_Q = 1.0 * ( (P * log_metabolites) + (R * log_metabolites));
-    std::cout << "log_Q_inv size: " << log_Q_inv.size()
-        << "\tlog_Q size: " << log_Q.size() << "\n";
 
     VectorXd EKQ_f(nrxns);  //allocate. can break down to one vector but leave as two for clarity right now. 
     VectorXd EKQ_r(nrxns);    
@@ -97,7 +95,7 @@ int lmder_functor::operator()(const VectorXd& log_vcounts, VectorXd& deriv)
 
     //(nvar x 1) <=(nvar x nrxns) * (nrxns x 1)
     deriv = (S.topLeftCorner(nrxns, nvar).transpose()) * (EKQ_f - EKQ_r);
-    //printShape("deriv", deriv);
+    std::cout << deriv << "\n\n";
     std::cout << __func__ << " end\n";
     return 0;
 }
@@ -124,13 +122,16 @@ Eigen::VectorXd least_squares(
             E_Regulation,
             log_fcounts);
 
-    std::cout << "Passed functor initialization\n";
-
     Eigen::LevenbergMarquardt<lmder_functor> lm(functor);
+    lm.parameters.maxfev = 2000;
+    lm.parameters.xtol = 1e-15;
 
-    std::cout << "Passed eigen thing initialization\n";
-
-    lm.minimize(log_vcounts);
+    int return_value = lm.minimize(log_vcounts);
+    std::cout << "Got return value " << return_value
+      << "\nlm.iter " << lm.iter
+      << "\nlog vcounts\n"
+      << log_vcounts
+      << "\n";
 
     std::cout << "Passed minimization\n";
 
@@ -152,13 +153,14 @@ Eigen::MatrixXd read_mm(const std::string& path)
 
     double d;
     Eigen::MatrixXd mat(rows, cols);
-    for (int i=0; i < rows; i++)
-        for (int j=0; j < cols; j++)
+    for (int j=0; j < cols; j++)
+        for (int i=0; i < rows; i++)
         {
             file >> d;
             mat(i, j) = d;
         }
     file.close();
+    std::cout << mat << "\n";
 
     return mat;
 }
