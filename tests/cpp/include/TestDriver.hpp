@@ -52,6 +52,9 @@ struct TestDriver
     void print_summary();
     void test_interface();
     void test_call();
-    void test_minimize(DiffType);
+    void test_minimize(
+        DiffType dt,
+        const int maxfevs=2500,
+        const double xtol=1e-15);
     void test_all();
 };

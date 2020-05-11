@@ -37,15 +37,10 @@ void TestDriver::init(const std::string& datadir)
   results = read_vector(datadir + "/results.txt");
 }
 
-void TestDriver::test_interface()
-{
-}
-
-void TestDriver::test_call()
-{
-}
-
-void TestDriver::test_minimize(DiffType dt)
+void TestDriver::test_minimize(
+    DiffType dt,
+    const int maxfevs,
+    const double xtol)
 {
   VectorXd result = least_squares(
       S_mat,
@@ -56,18 +51,16 @@ void TestDriver::test_minimize(DiffType dt)
       f_log_counts,
       v_log_counts,
       dt,
-      1000,
-      1e-10);
+      maxfevs,
+      xtol);
   os << "Called least_squares with " << dt
     << " with result:\n" << result << "\n";
 }
 
 void TestDriver::test_all()
 {
-  test_interface();
-  test_call();
-  test_minimize(DiffType::Analytical);
-  test_minimize(DiffType::Numerical);
+  test_minimize(DiffType::Analytical, 100, 1e-10);
+  test_minimize(DiffType::Numerical, 100, 1e-10);
 }
 
 void TestDriver::print_summary()

@@ -9,6 +9,9 @@ target_link_libraries(TestClass PUBLIC ParLeastSquares)
 add_executable(TestDriver driver.cpp)
 target_link_libraries(TestDriver PRIVATE TestClass warnings options)
 
+add_executable(LeastSquares least_squares.cpp)
+target_link_libraries(LeastSquares PRIVATE TestClass warnings options)
+
 add_test(
   NAME TestAll
   COMMAND $<TARGET_FILE:TestDriver> ${DATA_PATH})
