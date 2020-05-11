@@ -18,7 +18,7 @@ int main(int argc, char** argv)
     }
     else
     {
-        datadir = "../tests/test_cases/matrix_market/";
+        datadir = "./tests/test_cases/matrix_market/";
     }
 
     MatrixXd S_mat          = read_mm(datadir + "/S_mat.mtx");
@@ -30,18 +30,19 @@ int main(int argc, char** argv)
     VectorXd f_log_counts   = read_vector(datadir + "/f_log_counts.txt");
     VectorXd v_log_counts   = read_vector(datadir + "/v_log_counts.txt");
 
-    VectorXd results        = read_vector(datadir + "/results.txt");
+    MatrixXd results        = read_mm(datadir + "/results.mtx");
 
-    auto lm = lmder_functor(
-            S_mat, R_mat, P_mat,
-            Keq_constant, state, f_log_counts);
+    VectorXd result = least_squares(
+            S_mat,
+            R_mat,
+            P_mat, 
+            Keq_constant,
+            state,
+            f_log_counts,
+            v_log_counts);
 
-    VectorXd deriv(S_mat.rows());
-
-    lm(v_log_counts, deriv);
-
-    std::cout << "Got deriv values of:\n"
-        << deriv
+    std::cout << "Got minimized values of "
+        << result
         << "\n\n";
 
     return 0;

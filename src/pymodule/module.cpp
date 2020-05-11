@@ -20,7 +20,7 @@
 
 #include <Eigen/Core>
 
-#include <ParLeastSquares>
+#include <ParLeastSquares.hpp>
 
 namespace py = pybind11;
 
