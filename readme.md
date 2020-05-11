@@ -9,6 +9,18 @@ Optimizes multiple inputs in parallel using the Levenberg-Marquadt algorithm.
 - python3
 - numpy
 
+# Testing
+
+```console
+$ mkdir build; cd build
+$ cmake ..
+$ ctest
+```
+
+You may also run `TestDriver` directly. There are preset directories in which the test
+driver will look for matrix/vector files, however you may provide additional paths
+as arguments.
+
 # Installation
 
 Preferably using a virtual environment:
@@ -17,14 +29,3 @@ $ python3 -m venv my_venv
 $ source my_venv/bin/activate
 $ python -m pip install --user --editable .
 ```
-
-Upon installation of requirements, you should now be able to run tests under 
-the `tests` directory. Note that you may have to add the project root to your
-linker path like so:
-```console
-$ LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/path/to/project" python -c 'import pstep'
-```
-
-This is because an internal shared library must be installed on your system's path
-to be found by python. Actually installing the module (not with --editable) will take
-care of this.
