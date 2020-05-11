@@ -20,7 +20,7 @@
 
 #include <Eigen/Core>
 
-#include <ParLeastSquares.hpp>
+#include <ParLeastSquares>
 
 namespace py = pybind11;
 
@@ -40,113 +40,105 @@ namespace py = pybind11;
  *
  */
 void potential_step(
-        const int index,
-        Eigen::MatrixXd& S_mat,
-        Eigen::MatrixXd& R_back_mat,
-        Eigen::MatrixXd& P_mat,
-        Eigen::VectorXd& Keq_constant,
-        Eigen::VectorXd& E_Regulation,
-        Eigen::VectorXd& log_fcounts,
-        Eigen::VectorXd& log_vcounts,
-        Eigen::MatrixXd& returns,
-        int tid)
+    const int index,
+    Eigen::MatrixXd& S_mat,
+    Eigen::MatrixXd& R_back_mat,
+    Eigen::MatrixXd& P_mat,
+    Eigen::VectorXd& Keq_constant,
+    Eigen::VectorXd& E_Regulation,
+    Eigen::VectorXd& log_fcounts,
+    Eigen::VectorXd& log_vcounts,
+    Eigen::MatrixXd& returns,
+    int tid)
 {
-    std::cout << "--- tid<" << tid << "> potential step being calculated...\n";
+  std::cout << "--- tid<" << tid << "> potential step being calculated...\n";
 
-    Eigen::VectorXd result = least_squares(
-            S_mat,
-            R_back_mat,
-            P_mat, 
-            Keq_constant,
-            E_Regulation,
-            log_fcounts,
-            log_vcounts);
+  Eigen::VectorXd result = least_squares(
+      S_mat,
+      R_back_mat,
+      P_mat, 
+      Keq_constant,
+      E_Regulation,
+      log_fcounts,
+      log_vcounts);
 
-    returns.row(tid) = result;
-    std::cout << "Returning from tid<" << tid << ">\n";
+  returns.row(tid) = result;
+  std::cout << "Returning from tid<" << tid << ">\n";
 }
 
 
 [[nodiscard]] auto dispatch(
-        const std::vector<int>& indices,
-        Eigen::MatrixXd& S_mat,
-        Eigen::MatrixXd& R_back_mat,
-        Eigen::MatrixXd& P_mat,
-        Eigen::VectorXd& Keq_constant,
-        Eigen::VectorXd& E_Regulation,
-        Eigen::VectorXd& log_fcounts,
-        Eigen::VectorXd& log_vcounts
-        ) -> Eigen::MatrixXd
+    const std::vector<int>& indices,
+    Eigen::MatrixXd& S_mat,
+    Eigen::MatrixXd& R_back_mat,
+    Eigen::MatrixXd& P_mat,
+    Eigen::VectorXd& Keq_constant,
+    Eigen::VectorXd& E_Regulation,
+    Eigen::VectorXd& log_fcounts,
+    Eigen::VectorXd& log_vcounts
+    ) -> Eigen::MatrixXd
 {
 
-    const int n_threads = indices.size();
-    /*
-    if constexpr (MY_CPP_STD < CPP11)
-    {
-        Eigen::initParallel();
-    }
+  const int n_threads = indices.size();
 
-    // Eigen::setNbThreads(n_threads);
-    */
+  /*
+   * Returns mxn where:
+   * m = num reactions
+   * n = num variable metabolites
+   */
+  Eigen::MatrixXd returns (S_mat.rows(), S_mat.cols()-log_fcounts.size());
 
-    /*
-     * Returns mxn where:
-     * m = num reactions
-     * n = num variable metabolites
-     */
-    Eigen::MatrixXd returns (S_mat.rows(), S_mat.cols()-log_fcounts.size());
+  for (int tid=0; tid<n_threads; tid++)
+  {
+    potential_step(
+        indices[tid],
+        S_mat,
+        R_back_mat,
+        P_mat,
+        Keq_constant,
+        E_Regulation,
+        log_fcounts,
+        log_vcounts,
+        returns,
+        tid);
+  }
 
-    for (int tid=0; tid<n_threads; tid++)
-    {
-        potential_step(
-                indices[tid],
-                S_mat,
-                R_back_mat,
-                P_mat,
-                Keq_constant,
-                E_Regulation,
-                log_fcounts,
-                log_vcounts,
-                returns,
-                tid);
-    }
+  /*
+   * Not used for now... Sequential solver first!
+   *
+   std::vector<std::thread> handles(n_threads);
+   for (int tid=0; tid<n_threads; tid++)
+   {
+   handles[tid] = std::thread(
+   potential_step,
+   indices[tid],
+   std::ref(state),
+   std::ref(v_log_counts),
+   std::ref(f_log_counts),
+   std::ref(mu0),
+   std::ref(S_mat),
+   std::ref(R_back_mat),
+   std::ref(P_mat),
+   std::ref(Keq_constant),
+   returns,
+   tid
+   );
+   }
 
-    /*
-     * Not used for now... Sequential solver first!
-     *
-     std::vector<std::thread> handles(n_threads);
-     for (int tid=0; tid<n_threads; tid++)
-     {
-     handles[tid] = std::thread(
-     potential_step,
-     indices[tid],
-     std::ref(state),
-     std::ref(v_log_counts),
-     std::ref(f_log_counts),
-     std::ref(mu0),
-     std::ref(S_mat),
-     std::ref(R_back_mat),
-     std::ref(P_mat),
-     std::ref(Keq_constant),
-     returns,
-     tid
-     );
-     }
+   for (auto& th : handles) th.join();
+   */
 
-     for (auto& th : handles) th.join();
-     */
-
-    std::cout << "Graceful exit...\n";
-    return returns;
+  std::cout << "Graceful exit...\n";
+  return returns;
 }
 
 void test_call()
 {
-    std::cout << "Called into cxx\n";
+  std::cout << "Called into cxx\n";
 }
 
 PYBIND11_MODULE(pstep, m) {
-    m.doc() = "Dispatches jobs to calculate potential steps."; // optional module docstring
-    m.def("dispatch", &dispatch, "Dispatches jobs");
-    m.def("test_call_", &test_call, "");
+  m.doc() = "Dispatches jobs to calculate potential steps."; // optional module docstring
+  m.def("dispatch", &dispatch, "Dispatches jobs");
+  m.def("test_call_", &test_call, "");
 }

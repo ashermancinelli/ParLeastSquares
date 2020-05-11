@@ -11,7 +11,7 @@
 #include <Eigen/Core>
 #include <unsupported/Eigen/SparseExtra>
 
-#include <ParLeastSquares.hpp>
+#include <ParLeastSquares>
 #include <TestDriver.hpp>
 
 int main(int argc, char** argv)

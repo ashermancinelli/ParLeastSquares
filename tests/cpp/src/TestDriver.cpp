@@ -45,45 +45,19 @@ void TestDriver::test_call()
 {
 }
 
-void TestDriver::test_minimize_numerical()
-{
-  VectorXd result = least_squares(
-      S_mat,
-      R_mat,
-      P_mat, 
-      Keq_constant,
-      state,
-      f_log_counts,
-      v_log_counts,
-      DiffType::Numerical);
-  os << "Called least_squares. Got result:\n" << result << "\n";
-}
-
-void TestDriver::test_minimize_analytical()
-{
-  VectorXd result = least_squares(
-      S_mat,
-      R_mat,
-      P_mat, 
-      Keq_constant,
-      state,
-      f_log_counts,
-      v_log_counts,
-      DiffType::Analytical);
-  os << "Called least_squares. Got result:\n" << result << "\n";
-}
-
 void TestDriver::test_minimize(DiffType dt)
 {
-  switch (dt)
-  {
-    case DiffType::Analytical:
-      test_minimize_analytical();
-      return;
-    case DiffType::Numerical:
-      test_minimize_numerical();
-      return;
-  }
+  VectorXd result = least_squares(
+      S_mat,
+      R_mat,
+      P_mat, 
+      Keq_constant,
+      state,
+      f_log_counts,
+      v_log_counts,
+      dt);
+  os << "Called least_squares with " << dt
+    << " with result:\n" << result << "\n";
 }
 
 void TestDriver::test_all()
@@ -105,49 +79,3 @@ void TestDriver::print_summary()
     os << "Tests passed.\n";
   }
 }
-
-/*
- * - - - - - - - - - - - - - - - - - - - - - -
- * Utility functions
- * - - - - - - - - - - - - - - - - - - - - - -
- */
-inline bool file_exists(const std::string& path)
-{
-  std::ifstream f(path.c_str());
-  return f.good();
-}
-
-bool all_files_exist(
-    const std::string& dir,
-    const std::vector<std::string>& filenames)
-{
-  for (const auto& filename : filenames)
-  {
-    if (!file_exists(dir + filename))
-      return false;
-  }
-
-  return true;
-}
-
-std::optional<std::string> found_acceptable_dir(
-    const std::vector<std::string>& dirs,
-    const std::vector<std::string>& filenames)
-{
-  for (const auto& dir : dirs)
-  {
-    std::cout << "Checking dir " << dir << "\n";
-    if (all_files_exist(dir, filenames))
-    {
-      std::cout << "Found all files in dir " << dir << "\n";
-      return dir;
-    }
-  }
-  return std::nullopt;
-}
-
-/*
- * - - - - - - - - - - - - - - - - - - - - - -
- * \Utility functions
- * - - - - - - - - - - - - - - - - - - - - - -
- */

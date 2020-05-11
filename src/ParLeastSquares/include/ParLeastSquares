@@ -1,0 +1,23 @@
+#pragma once
+
+#include <cmath>
+#include <cassert>
+#include <fstream>
+#include <iostream>
+#include <Eigen/Eigen>
+#include <unsupported/Eigen/NonLinearOptimization>
+
+#include <defs.hpp>
+
+using namespace Eigen;
+
+enum DiffType
+{
+  Analytical,
+  Numerical,
+};
+
+#include <utilities.hpp>
+#include <LMFunctor.hpp>
+#include <LMFunctorAnalytical.hpp>
+#include <interface.hpp>
