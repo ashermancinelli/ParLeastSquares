@@ -5,19 +5,11 @@ project(ParLeastSquares CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-option(USE_ANALYTICAL_DF ON)
-
-message("CMake looking for pybind11...")
 add_subdirectory(pybind11)
 
-message("CMake looking for Eigen3...")
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 
-if(TARGET Eigen3::Eigen)
-  message("Found Eigen3")
-else()
-  message(FATAL_ERROR "Did not find Eigen3. You may specify eigen directory with -DEigen3_DIR")
-endif()
+set(DATA_PATH CACHE PATH "Path to data directory for tests")
 
 enable_testing()
 
@@ -79,10 +71,6 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     INTERFACE
     -Wmisleading-indentation    # Warn on indented blocks
     # that are not really blocks
-    -Wduplicated-cond           # Warn on if/else chain with
-    # duplicated conditions
-    -Wduplicated-branches       # Warn on if/else chains with
-    # duplicated code
     -Wuseless-cast              # Warn when casting to the same type
     )
 endif()

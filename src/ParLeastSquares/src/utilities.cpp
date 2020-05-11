@@ -49,6 +49,6 @@ Eigen::VectorXd read_vector(const std::string& path)
   std::cout << "Reading vector with size " << vec.size()
     << " from " << path << "\n";
   VectorXd eigen_vec(vec.size());
-  for (int i=0; i<vec.size(); i++) eigen_vec(i) = vec[i];
+  for (unsigned int i=0; i<vec.size(); i++) eigen_vec(i) = vec[i];
   return eigen_vec;
 }

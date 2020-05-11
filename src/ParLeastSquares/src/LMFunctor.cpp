@@ -2,9 +2,8 @@
 
 int LMFunctor::operator()(const VectorXd& log_vcounts, VectorXd& deriv) const
 {
-  int nrxns = S.rows();
-  int nvar = log_vcounts.rows();//make sure this is length and not 1
-  int metabolite_count = S.cols();
+  int nrxns = static_cast<int>(S.rows());
+  int nvar = static_cast<int>(log_vcounts.size());//make sure this is length and not 1
 
   VectorXd log_metabolites(log_vcounts.size() + log_fcounts.size());
   log_metabolites << log_vcounts, log_fcounts;
@@ -26,10 +25,8 @@ int LMFunctor::operator()(const VectorXd& log_vcounts, VectorXd& deriv) const
     EKQ_r(rxn) = ekq_r;
   }
 
-  //printShape("--- S", S);
-  // auto _S = S.block(nrxns,nvar); //take all rows (reactions) and only variable columns.
-
   //(nvar x 1) <=(nvar x nrxns) * (nrxns x 1)
   deriv = (S.topLeftCorner(nrxns, nvar).transpose()) * (EKQ_f - EKQ_r);
+  // std::cout << "deriv:\n" << deriv << "\n";
   return 0;
 }

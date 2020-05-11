@@ -55,7 +55,9 @@ void TestDriver::test_minimize(DiffType dt)
       state,
       f_log_counts,
       v_log_counts,
-      dt);
+      dt,
+      1000,
+      1e-10);
   os << "Called least_squares with " << dt
     << " with result:\n" << result << "\n";
 }

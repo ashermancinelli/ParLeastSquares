@@ -11,4 +11,4 @@ target_link_libraries(TestDriver PRIVATE TestClass warnings options)
 
 add_test(
   NAME TestAll
-  COMMAND $<TARGET_FILE:TestDriver>)
+  COMMAND $<TARGET_FILE:TestDriver> ${DATA_PATH})

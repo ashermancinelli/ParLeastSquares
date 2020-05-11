@@ -11,9 +11,8 @@ int LMFunctorAnalytical::df(const VectorXd &log_vcounts, MatrixXd &fjac)
   //N metabolites derivatives (columns)
   //J_ij = d/dx_i(df_j/dt)
 
-  int nrxns = S.rows();
-  int nvar = log_vcounts.size();//make sure this is length and not 1
-  int metabolite_count = S.cols();
+  int nrxns = static_cast<int>(S.rows());
+  int nvar = static_cast<int>(log_vcounts.size());//make sure this is length and not 1
 
   //WARNING Only use to calcualte KQ
   VectorXd log_metabolites(log_vcounts.size() + log_fcounts.size());
