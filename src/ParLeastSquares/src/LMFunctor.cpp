@@ -2,7 +2,7 @@
 
 int LMFunctor::operator()(const VectorXd& log_vcounts, VectorXd& deriv) const
 {
-  int nrxns = static_cast<int>(S.rows());
+  int nrxns = m;
   int nvar = static_cast<int>(log_vcounts.size());//make sure this is length and not 1
 
   VectorXd log_metabolites(log_vcounts.size() + log_fcounts.size());
@@ -25,8 +25,7 @@ int LMFunctor::operator()(const VectorXd& log_vcounts, VectorXd& deriv) const
     EKQ_r(rxn) = ekq_r;
   }
 
-  //(nvar x 1) <=(nvar x nrxns) * (nrxns x 1)
   deriv = (S.topLeftCorner(nrxns, nvar).transpose()) * (EKQ_f - EKQ_r);
-  // std::cout << "deriv:\n" << deriv << "\n";
+  std::cout << "L2 norm: " << deriv.squaredNorm() << "\n";
   return 0;
 }

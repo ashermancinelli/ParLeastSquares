@@ -28,11 +28,11 @@ struct TestDriver
     MatrixXd S_mat;
     MatrixXd R_mat;
     MatrixXd P_mat;
+    MatrixXd results;
     VectorXd Keq_constant;
     VectorXd state;
     VectorXd f_log_counts;
     VectorXd v_log_counts;
-    VectorXd results;
     std::ostream& os = std::cout;
     int fail = 0;
 

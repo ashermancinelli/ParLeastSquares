@@ -13,7 +13,11 @@ struct LMFunctor
 
   // Number of data points, i.e. values.
   int m;
-  // The number of parameters, i.e. inputs.
+
+  /* 
+   * The number of parameters, i.e. inputs.
+   * AKA the number of variable concentrations
+   */
   int n;
 
   MatrixXd S;

@@ -30,11 +30,11 @@ void TestDriver::init(const std::string& datadir)
   S_mat = read_mm(datadir + "/S_mat.mtx");
   R_mat = read_mm(datadir + "/R_mat.mtx");
   P_mat = read_mm(datadir + "/P_mat.mtx");
+  results = read_mm(datadir + "/results.mtx");
   Keq_constant = read_vector(datadir + "/Keq_constant.txt");
   state = read_vector(datadir + "/state.txt");
   f_log_counts = read_vector(datadir + "/f_log_counts.txt");
   v_log_counts = read_vector(datadir + "/v_log_counts.txt");
-  results = read_vector(datadir + "/results.txt");
 }
 
 void TestDriver::test_minimize(

@@ -32,7 +32,8 @@ int LMFunctorAnalytical::df(const VectorXd &log_vcounts, MatrixXd &fjac)
 
   VectorXd x(nrxns);
 
-  for (int rxn=0; rxn < nrxns; rxn++){
+  for (int rxn=0; rxn < nrxns; rxn++)
+  {
     double Q_inv_rxn = exp(log_Q_inv(rxn));
     double ekq_f = E_Regulation(rxn) * Keq_constant(rxn) * Q_inv_rxn;
 
