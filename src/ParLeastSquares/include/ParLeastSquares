@@ -11,7 +11,7 @@
 
 using namespace Eigen;
 
-enum DiffType
+enum class DiffType
 {
   Analytical,
   Numerical,

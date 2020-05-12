@@ -6,12 +6,15 @@ target_include_directories(TestClass PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_link_libraries(TestClass PRIVATE warnings options)
 target_link_libraries(TestClass PUBLIC ParLeastSquares)
 
-add_executable(TestDriver driver.cpp)
-target_link_libraries(TestDriver PRIVATE TestClass warnings options)
-
 add_executable(LeastSquares least_squares.cpp)
 target_link_libraries(LeastSquares PRIVATE TestClass warnings options)
 
-add_test(
-  NAME TestAll
-  COMMAND $<TARGET_FILE:TestDriver> ${DATA_PATH})
+foreach(maxfevs RANGE 1000 5000 1000)
+  foreach(xtol_power RANGE 10 20 5)
+    foreach(method numerical analytical)
+      add_test(
+        NAME "Test_Maxfevs_${maxfevs}_XTol_1e-${xtol_power}_${method}"
+        COMMAND $<TARGET_FILE:LeastSquares> ${maxfevs} 1e-${xtol_power} ${method} ${DATA_PATH})
+    endforeach()
+  endforeach()
+endforeach()

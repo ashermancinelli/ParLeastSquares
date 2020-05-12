@@ -9,23 +9,40 @@ Optimizes multiple inputs in parallel using the Levenberg-Marquadt algorithm.
 - python3
 - numpy
 
+# Building
+
+You may have to specify directories of dependencies, like so:
+
+```console
+$ mkdir build; cd build
+$ cmake .. \
+$   -DEigen3_DIR=/some/path
+$ ctest
+```
+
+This will also output
+
 # Testing
 
 ```console
 $ mkdir build; cd build
 $ cmake ..
+$ make
 $ ctest
 ```
 
-You may also run `TestDriver` directly. There are preset directories in which the test
-driver will look for matrix/vector files, however you may provide additional paths
-as arguments.
+Or you may optionally specify paths to folders with data for the tests:
+```console
+$ cmake .. -DDATA_PATH=/some/path
+$ make
+$ ctest
+```
 
 # Installation
 
-Preferably using a virtual environment:
+You may install the python bindings like so (preferably using a virtual environment):
 ```console
 $ python3 -m venv my_venv
 $ source my_venv/bin/activate
-$ python -m pip install --user --editable .
+$ python -m pip install --editable .
 ```

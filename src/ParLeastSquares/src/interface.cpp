@@ -83,7 +83,7 @@ Eigen::VectorXd least_squares(
 
   switch (dt)
   {
-    case Numerical:
+    case DiffType::Numerical:
       return least_squares_numerical(
           S_mat,
           R_back_mat,
@@ -94,7 +94,7 @@ Eigen::VectorXd least_squares(
           log_vcounts,
           maxfev,
           xtol);
-    case Analytical:
+    case DiffType::Analytical:
       return least_squares_analytical(
           S_mat,
           R_back_mat,

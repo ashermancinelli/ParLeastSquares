@@ -30,17 +30,19 @@ int main(int argc, char** argv)
   switch (argc)
   {
     case 1:
+      // Defaults
       maxfevs = 1000;
       xtol = 1e-10;
       dt = DiffType::Numerical;
       break;
     case 2:
-    case 3:
-      usage();
-      return 1;
+    case 3: usage(); return 1;
     default:
-      maxfevs = atoi(argv[1]);
-      xtol = atof(argv[2]);
+      if ((maxfevs = atoi(argv[1])) == 0)
+      { usage(); return 1; }
+
+      if ((xtol = atof(argv[2])) == 0)
+      { usage(); return 1; }
 
       if (strcmp(argv[3], "numerical") == 0)
       {
@@ -50,11 +52,7 @@ int main(int argc, char** argv)
       {
         dt = DiffType::Analytical;
       }
-      else
-      {
-        usage();
-        return 1;
-      }
+      else { usage(); return 1; }
 
       if (argc > 4)
       {
