@@ -34,7 +34,7 @@ struct LMFunctor
       VectorXd& _Keq_constant,
       VectorXd& _E_Regulation,
       VectorXd& _log_fcounts):
-    m(static_cast<int>(_S.rows())),
+    m(static_cast<int>(_S.cols()-_log_fcounts.size())),
     n(static_cast<int>(_S.cols()-_log_fcounts.size())),
     S(_S),
     R(_R),

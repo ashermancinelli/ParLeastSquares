@@ -54,7 +54,10 @@ void TestDriver::test_minimize(
       maxfevs,
       xtol);
   os << "Called least_squares with " << dt
-    << " with result:\n" << result << "\n";
+    << " with result:\n" << result << "\n"
+    << "Expected: \n" << results.row(0) << "\n";
+  write_vector(result, "./results.txt");
+  write_vector(results.row(0), "./expected.txt");
 }
 
 void TestDriver::test_all()

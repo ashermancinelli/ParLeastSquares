@@ -23,8 +23,7 @@ Eigen::VectorXd least_squares_analytical(
 
   lm.parameters.maxfev = maxfev;
   lm.parameters.xtol = xtol;
-  int return_value = lm.minimize(log_vcounts);
-  (void)return_value;
+  lm.minimize(log_vcounts);
 
   return log_vcounts;
 }
@@ -54,8 +53,7 @@ Eigen::VectorXd least_squares_numerical(
   lm.parameters.maxfev = maxfev;
   lm.parameters.xtol = xtol;
 
-  int return_value = lm.minimize(log_vcounts);
-  (void)return_value;
+  lm.minimize(log_vcounts);
 
   return log_vcounts;
 }

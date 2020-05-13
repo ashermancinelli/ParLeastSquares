@@ -32,6 +32,30 @@ Eigen::MatrixXd read_mm(const std::string& path)
   return mat;
 }
 
+bool write_mm(
+    const Eigen::MatrixXd& mtx,
+    const std::string& path)
+{
+  std::ofstream file(path);
+  if (!file.good())
+  {
+    return false;
+  }
+
+  const int rows = mtx.rows(),
+    cols = mtx.cols();
+
+  file << rows << cols << "\n" << std::setprecision(10);
+  for (int j=0; j < cols; j++)
+  {
+    for (int i=0; i < rows; i++)
+    {
+      file << mtx(i, j) << "\n";
+    }
+  }
+  return true;
+}
+
   [[nodiscard]]
 Eigen::VectorXd read_vector(const std::string& path)
 {
@@ -51,4 +75,22 @@ Eigen::VectorXd read_vector(const std::string& path)
   VectorXd eigen_vec(vec.size());
   for (unsigned int i=0; i<vec.size(); i++) eigen_vec(i) = vec[i];
   return eigen_vec;
+}
+
+bool write_vector(
+    const Eigen::VectorXd& vec,
+    const std::string& path)
+{
+  std::ofstream file(path);
+  if (!file.good())
+  {
+    return false;
+  }
+
+  file << std::setprecision(10);
+  for (int i=0; i<vec.size(); i++)
+  {
+    file << vec(i) << "\n";
+  }
+  return true;
 }

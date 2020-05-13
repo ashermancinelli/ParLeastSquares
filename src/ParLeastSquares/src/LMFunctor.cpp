@@ -2,7 +2,7 @@
 
 int LMFunctor::operator()(const VectorXd& log_vcounts, VectorXd& deriv) const
 {
-  int nrxns = m;
+  int nrxns = static_cast<int>(S.rows());
   int nvar = static_cast<int>(log_vcounts.size());//make sure this is length and not 1
 
   VectorXd log_metabolites(log_vcounts.size() + log_fcounts.size());
