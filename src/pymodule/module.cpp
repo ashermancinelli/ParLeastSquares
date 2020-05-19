@@ -49,7 +49,10 @@ void potential_step(
     Eigen::VectorXd& log_fcounts,
     Eigen::VectorXd& log_vcounts,
     Eigen::MatrixXd& returns,
-    int tid)
+    int tid,
+    DiffType dt,
+    const int& maxfev,
+    const double& xtol)
 {
   std::cout << "--- tid<" << tid << "> potential step being calculated...\n";
 
@@ -60,7 +63,10 @@ void potential_step(
       Keq_constant,
       E_Regulation,
       log_fcounts,
-      log_vcounts);
+      log_vcounts,
+      dt,
+      maxfev,
+      xtol);
 
   returns.row(tid) = result;
   std::cout << "Returning from tid<" << tid << ">\n";
@@ -87,6 +93,8 @@ void potential_step(
    * n = num variable metabolites
    */
   Eigen::MatrixXd returns (S_mat.rows(), S_mat.cols()-log_fcounts.size());
+  const int maxfev = 2000;
+  const double xtol = 1e-15;
 
   for (int tid=0; tid<n_threads; tid++)
   {
@@ -100,7 +108,10 @@ void potential_step(
         log_fcounts,
         log_vcounts,
         returns,
-        tid);
+        tid,
+        DiffType::Numerical,
+        maxfev,
+        xtol);
   }
 
   /*
@@ -128,17 +139,10 @@ void potential_step(
    for (auto& th : handles) th.join();
    */
 
-  std::cout << "Graceful exit...\n";
   return returns;
 }
 
-void test_call()
-{
-  std::cout << "Called into cxx\n";
-}
-
 PYBIND11_MODULE(pstep, m) {
-  m.doc() = "Dispatches jobs to calculate potential steps."; // optional module docstring
+  m.doc() = "Dispatches jobs to calculate potential steps.";
   m.def("dispatch", &dispatch, "Dispatches jobs");
-  m.def("test_call_", &test_call, "");
 }

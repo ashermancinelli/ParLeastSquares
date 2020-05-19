@@ -10,7 +10,7 @@ add_executable(LeastSquares least_squares.cpp)
 target_link_libraries(LeastSquares PRIVATE TestClass warnings options)
 
 foreach(maxfevs RANGE 1000 5000 1000)
-  foreach(xtol_power RANGE 10 20 5)
+  foreach(xtol_power RANGE 5 10 20)
     foreach(method numerical analytical)
       add_test(
         NAME "Test_Maxfevs_${maxfevs}_XTol_1e-${xtol_power}_${method}"

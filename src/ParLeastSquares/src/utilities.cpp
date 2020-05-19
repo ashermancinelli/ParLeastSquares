@@ -42,8 +42,8 @@ bool write_mm(
     return false;
   }
 
-  const int rows = mtx.rows(),
-    cols = mtx.cols();
+  const int rows = static_cast<int>(mtx.rows()),
+    cols = static_cast<int>(mtx.cols());
 
   file << rows << cols << "\n" << std::setprecision(10);
   for (int j=0; j < cols; j++)
