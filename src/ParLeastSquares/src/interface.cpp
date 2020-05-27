@@ -52,8 +52,10 @@ Eigen::VectorXd least_squares_numerical(
 
   lm.parameters.maxfev = maxfev;
   lm.parameters.xtol = xtol;
+  
+  //std::cout<<"pre minimize point " << log_vcounts << std::endl;
+  lm.minimize(log_vcounts); //This log_vcounts is changing the minimize point.
 
-  lm.minimize(log_vcounts);
 
   return log_vcounts;
 }
@@ -75,9 +77,9 @@ Eigen::VectorXd least_squares(
     const int maxfev,
     const double xtol)
 {
-  std::cout << "maxfev: " << maxfev
-    << "\nxtol: " << xtol
-    << "\n";
+ // std::cout << "maxfev: " << maxfev
+  //  << "\nxtol: " << xtol
+  //  << "\n";
 
   switch (dt)
   {

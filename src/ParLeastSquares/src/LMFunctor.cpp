@@ -26,6 +26,8 @@ int LMFunctor::operator()(const VectorXd& log_vcounts, VectorXd& deriv) const
   }
 
   deriv = (S.topLeftCorner(nrxns, nvar).transpose()) * (EKQ_f - EKQ_r);
-  std::cout << "L2 norm: " << deriv.squaredNorm() << "\n";
+  //std::cout << "L2 norm: " << deriv.squaredNorm() << "\n";
+  //std::cout<< "log_vcounts " << log_vcounts << "\n";
+  //std::cout<< "deriv " << deriv << "\n";
   return 0;
 }
