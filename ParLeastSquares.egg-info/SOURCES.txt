@@ -1,6 +1,0 @@
-setup.py
-ParLeastSquares.egg-info/PKG-INFO
-ParLeastSquares.egg-info/SOURCES.txt
-ParLeastSquares.egg-info/dependency_links.txt
-ParLeastSquares.egg-info/not-zip-safe
-ParLeastSquares.egg-info/top_level.txt
