@@ -45,7 +45,7 @@ void potential_step(
     Eigen::MatrixXd& R_back_mat,
     Eigen::MatrixXd& P_mat,
     Eigen::VectorXd& Keq_constant,
-    Eigen::VectorXd& E_Regulation,
+    const Eigen::VectorXd& E_Regulation_static,
     Eigen::VectorXd& log_fcounts,
     Eigen::VectorXd& log_vcounts,
     Eigen::MatrixXd& returns,
@@ -54,8 +54,15 @@ void potential_step(
     const int& maxfev,
     const double& xtol)
 {
-  std::cout << "--- tid<" << tid << "> potential step being calculated...\n";
+  //std::cout << "--- tid<" << tid << "> potential step being calculated...\n";
 
+  //make a copy of E_Regulation_static
+  Eigen::VectorXd E_Regulation = E_Regulation_static;
+  
+  //Apply regulation
+  double current_activity = E_Regulation[index];
+  double new_activity = current_activity - current_activity/5.0;
+  E_Regulation[index] = new_activity;
   Eigen::VectorXd result = least_squares(
       S_mat,
       R_back_mat,
@@ -67,9 +74,9 @@ void potential_step(
       dt,
       maxfev,
       xtol);
-
+  //std::cout<< "In loop E_Regulation: " << E_Regulation << std::endl;
   returns.row(tid) = result;
-  std::cout << "Returning from tid<" << tid << ">\n";
+  //std::cout << "Returning from tid<" << tid << ">\n";
 }
 
 
@@ -93,8 +100,8 @@ void potential_step(
    * n = num variable metabolites
    */
   Eigen::MatrixXd returns (S_mat.rows(), S_mat.cols()-log_fcounts.size());
-  const int maxfev = 2000;
-  const double xtol = 1e-15;
+  const int maxfev = 5000;
+  const double xtol = 1e-10;
 
   for (int tid=0; tid<n_threads; tid++)
   {
