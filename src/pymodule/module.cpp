@@ -54,7 +54,6 @@ void potential_step(
     const int& maxfev,
     const double& xtol)
 {
-  //std::cout << "--- tid<" << tid << "> potential step being calculated...\n";
 
   //make a copy of E_Regulation_static
   Eigen::VectorXd E_Regulation = E_Regulation_static;
@@ -74,9 +73,7 @@ void potential_step(
       dt,
       maxfev,
       xtol);
-  //std::cout<< "In loop E_Regulation: " << E_Regulation << std::endl;
   returns.row(tid) = result;
-  //std::cout << "Returning from tid<" << tid << ">\n";
 }
 
 
@@ -121,35 +118,10 @@ void potential_step(
         xtol);
   }
 
-  /*
-   * Not used for now... Sequential solver first!
-   *
-   std::vector<std::thread> handles(n_threads);
-   for (int tid=0; tid<n_threads; tid++)
-   {
-   handles[tid] = std::thread(
-   potential_step,
-   indices[tid],
-   std::ref(state),
-   std::ref(v_log_counts),
-   std::ref(f_log_counts),
-   std::ref(mu0),
-   std::ref(S_mat),
-   std::ref(R_back_mat),
-   std::ref(P_mat),
-   std::ref(Keq_constant),
-   returns,
-   tid
-   );
-   }
-
-   for (auto& th : handles) th.join();
-   */
-
   return returns;
 }
 
-PYBIND11_MODULE(pstep, m) {
+PYBIND11_MODULE(__levmar_eigen_C, m) {
   m.doc() = "Dispatches jobs to calculate potential steps.";
   m.def("dispatch", &dispatch, "Dispatches jobs");
 }

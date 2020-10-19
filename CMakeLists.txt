@@ -5,9 +5,16 @@ project(ParLeastSquares CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_subdirectory(pybind11)
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+set(EXTERNALS_PATH ${PROJECT_SOURCE_DIR}/third_party CACHE PATH "Path to third party libraries.")
 
-find_package(Eigen3 3.3 REQUIRED NO_MODULE)
+if(APPLE)
+  set(MACOSX_RPATH ON)
+endif(APPLE)
+
+include(FindPythonComponents)
+include(FindEigen)
+include(FindPybind11System)
 
 set(DATA_PATH CACHE PATH "Path to data directory for tests")
 

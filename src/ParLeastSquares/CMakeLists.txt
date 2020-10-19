@@ -2,7 +2,7 @@ configure_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/include/defs.hpp.in 
   ${CMAKE_CURRENT_BINARY_DIR}/defs.hpp)
 
-add_library(ParLeastSquares SHARED
+add_library(ParLeastSquares STATIC
   src/interface.cpp
   src/LMFunctor.cpp
   src/LMFunctorAnalytical.cpp
@@ -14,4 +14,6 @@ target_include_directories(ParLeastSquares PUBLIC
 
 target_link_libraries(ParLeastSquares
   PRIVATE warnings options
-  PUBLIC Eigen3::Eigen)
+  PUBLIC eigen_dep)
+
+install(TARGETS ParLeastSquares DESTINATION ${Python3_SITELIB})

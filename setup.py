@@ -1,5 +1,10 @@
-from setuptools_cmake import *
-from tools.setup_helpers.cmake_setuptools import CMakeBuild, CMakeInstall
+
+from setuptools import find_packages, setup
+from tools.setup_helpers.cmake_setuptools import (
+        CMakeBuild,
+        CMakeInstall,
+        CMakeExtension,
+        )
 
 setup(
     name='levmar-eigen',
@@ -9,6 +14,7 @@ setup(
     description='Dispatcher for multiple parallel runs of an LM least-squares solver',
     long_description='',
     ext_modules=[CMakeExtension('ParLeastSquares')],
+    packages=find_packages(),
     cmdclass=dict(
         build_ext=CMakeBuild,
         install=CMakeInstall,

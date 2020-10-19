@@ -1,15 +1,18 @@
 set(PYBIND11_CPP_STANDARD -std=c++14)
 include(FindPythonInterp)
 
-add_library(pstep MODULE module.cpp)
+add_library(__levmar_eigen_C MODULE module.cpp)
 
-target_link_libraries(pstep PRIVATE
-  pybind11::module
-  Eigen3::Eigen
-  ParLeastSquares)
+target_link_libraries(__levmar_eigen_C PRIVATE 
+  pybind11_dep 
+  eigen_dep 
+  ParLeastSquares
+  ${Python3_LIBRARIES})
 
 set_target_properties(
-    pstep
-    PROPERTIES
-        PREFIX "${PYTHON_MODULE_PREFIX}"
-        SUFFIX "${PYTHON_MODULE_EXTENSION}")
+  __levmar_eigen_C
+  PROPERTIES
+  PREFIX "${PYTHON_MODULE_PREFIX}"
+  SUFFIX "${PYTHON_MODULE_EXTENSION}")
+
+install(TARGETS __levmar_eigen_C DESTINATION ${Python3_SITELIB})
