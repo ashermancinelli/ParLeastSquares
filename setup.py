@@ -5,6 +5,7 @@ from tools.setup_helpers.cmake_setuptools import (
         CMakeInstall,
         CMakeExtension,
         )
+from tools.setup_helpers.extra_setuptools_commands import CleanBuild
 
 setup(
     name='levmar-eigen',
@@ -18,6 +19,7 @@ setup(
     cmdclass=dict(
         build_ext=CMakeBuild,
         install=CMakeInstall,
+        clean=CleanBuild,
         ),
     zip_safe=False,
 )

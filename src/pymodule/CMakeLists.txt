@@ -3,6 +3,7 @@ include(FindPythonInterp)
 
 add_library(__levmar_eigen_C MODULE module.cpp)
 
+message(STATUS "Linking against ${Python3_LIBRARIES}")
 target_link_libraries(__levmar_eigen_C PRIVATE 
   pybind11_dep 
   eigen_dep 

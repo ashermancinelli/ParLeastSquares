@@ -16,22 +16,6 @@ from .env import *
 from .utils import *
 
 
-class CleanBuild(Command):
-    '''Clean build directory'''
-
-    user_options = []
-
-    def initialize_options(self):
-        ...
-
-    def finalize_options(self):
-        ...
-
-    def run(self):
-        build_dir = get_build_dir()
-        rmtree(build_dir)
-
-
 class CMakeExtension(Extension):
     '''Base for CMake setuptools extension'''
     def __init__(self, name, **extra_cmake_args):
