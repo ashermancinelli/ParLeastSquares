@@ -14,6 +14,7 @@ set_target_properties(
   __levmar_eigen_C
   PROPERTIES
   PREFIX "${PYTHON_MODULE_PREFIX}"
-  SUFFIX "${PYTHON_MODULE_EXTENSION}")
+  SUFFIX "${PYTHON_MODULE_EXTENSION}"
+  INSTALL_RPATH ${Python3_SITELIB})
 
 install(TARGETS __levmar_eigen_C DESTINATION ${Python3_SITELIB})
