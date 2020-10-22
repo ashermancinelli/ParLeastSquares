@@ -24,4 +24,11 @@ set_target_properties(
   PROPERTIES
   INSTALL_RPATH ${Python3_SITELIB})
 
+add_custom_command(
+  TARGET ParLeastSquares
+  POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy
+    $<TARGET_FILE:ParLeastSquares>
+    ${PROJECT_SOURCE_DIR}/levmar_eigen/$<TARGET_FILE_NAME:ParLeastSquares>)
+
 install(TARGETS ParLeastSquares DESTINATION ${Python3_SITELIB})

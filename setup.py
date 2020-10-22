@@ -1,4 +1,7 @@
 
+import os
+import glob
+
 from setuptools import find_packages, setup
 from tools.setup_helpers.cmake_setuptools import (
         CMakeBuild,
@@ -6,6 +9,9 @@ from tools.setup_helpers.cmake_setuptools import (
         CMakeExtension,
         )
 from tools.setup_helpers.extra_setuptools_commands import CleanBuild
+
+libs = [ i for i in glob.glob(os.path.join('levmar_eigen', '*'))
+        if not i.endswith('.py') and not '__pycache__' in i ]
 
 setup(
     name='levmar-eigen',
@@ -16,6 +22,8 @@ setup(
     long_description='',
     ext_modules=[CMakeExtension('ParLeastSquares')],
     packages=find_packages(),
+    package_data=dict(levmar_eigen=libs),
+    include_package_data=True,
     cmdclass=dict(
         build_ext=CMakeBuild,
         install=CMakeInstall,
