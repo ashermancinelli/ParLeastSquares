@@ -12,6 +12,7 @@ from tools.setup_helpers.extra_setuptools_commands import CleanBuild
 
 libs = [ i for i in glob.glob(os.path.join('levmar_eigen', '*'))
         if not i.endswith('.py') and not '__pycache__' in i ]
+print(libs)
 
 setup(
     name='levmar-eigen',

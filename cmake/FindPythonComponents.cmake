@@ -1,7 +1,11 @@
 
 set(CMAKE_FIND_FRAMEWORK NEVER)
 
-find_package(Python3 3.4 COMPONENTS Interpreter Development REQUIRED)
+if(NOT "$ENV{Python3_INCLUDE_DIRS}" STREQUAL "")
+  set(Python3_INCLUDE_DIRS $ENV{Python3_INCLUDE_DIRS})
+else()
+  find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
+endif()
 
 message(STATUS "Python include dirs: ${Python3_INCLUDE_DIRS}")
 message(STATUS "Python libraries: ${Python3_LIBRARIES}")
