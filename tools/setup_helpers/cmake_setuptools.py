@@ -44,7 +44,6 @@ class CMakeBuild(build_ext):
 
         pip_install()
         init_submodules()
-        generate_manifest()
 
         for ext in self.extensions:
             self.build_extension(ext)
@@ -83,9 +82,9 @@ class CMakeBuild(build_ext):
         os.environ['CXXFLAGS'] = '{} -DVERSION_INFO=\\"{}\\"'.format(os.environ.get('CXXFLAGS', ''),
                                                               self.distribution.get_version())
 
-        print(f'-- CMake arguments: {cmake_args}')
-        print(f'-- Build directory: {build_dir}')
-        print(f'-- Source directory: {ext.sourcedir}')
+        print('-- CMake arguments: ', cmake_args)
+        print('-- Build directory: ', build_dir)
+        print('-- Source directory: ', ext.sourcedir)
 
         # We currently aren't checking the output of these since they sometimes
         # give false negatives that halt the build process.

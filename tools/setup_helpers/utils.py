@@ -98,13 +98,3 @@ def init_submodules():
     for line in status.splitlines():
         if line.startswith('-') or line.startswith('+'):
             raise ValueError('Submodule not clean: {}'.format(line))
-
-def generate_manifest():
-    print('-- Generating MANIFEST.in')
-    output = subprocess.run(['git', 'ls-files'], check=True, capture_output=True)
-    with open('MANIFEST.in', 'w') as f:
-        for line in output.stdout.decode('utf-8').split('\n'):
-            if os.path.isfile('./' + line):
-                f.write('include ' + line + '\n')
-        f.write('recursive-include externals *\n')
-
